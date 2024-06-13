@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/snbeta/messagesimulator/k3s_demo
+  repository: ghcr.io/artjcod/samplecicd
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "e9b1c988"
+  tag: "sha256-eb70b8b67d08cd14c48559ba4527a0df055ad8faabc36e1a3bb6ae8063a2d313"
 
 imagePullSecrets: []
 nameOverride: ""
