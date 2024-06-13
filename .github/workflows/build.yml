@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          push: true
+          push: true 
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
@@ -59,26 +59,27 @@ jobs:
           push-to-registry: true
 
 
-  # This job is to update helm chart
-  update-helm-chart:
+  Update-Helm-Chart:
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
-      contents: write
-	    pull-requests: write
-      #
-    steps:    
+      contents: read
+      packages: read
+      pull-requests: write
+      # 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-	    - name: update tag value
-	      run: | 
-		    sed -i "s/tag:.*/tag:/ ${{ steps.push.outputs.digest }}/g" values.yaml
-	    - name: Commit Changes
-	      run: | 
-	    	git config --local user.email "build@github.com"
-		    git config --local user.name "GitHub Workflow Build"
-		    git add values.yaml
-	      git commit -m "update tag value to ${{ steps.push.outputs.digest }}"
-		    git push
-		
-		
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      - name: Update Values.yaml
+        run: sed -i "s/tag:.*/tag:/ ${{ steps.push.outputs.digest }}/g" values.yaml
+      - name: Commit files
+        run: |
+         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --local user.name "github-actions[bot]"
+         git commit -a -m "Add changes"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         branch: ${{ github.ref }}
