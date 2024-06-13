@@ -15,6 +15,8 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    outputs:
+     tagDiegest: ${{ steps.push.outputs.digest }}
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -52,6 +54,7 @@ jobs:
       
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)." 
       - name: Generate artifact attestation
+        id: artifact 
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
@@ -76,7 +79,7 @@ jobs:
         uses: dreitier/conditional-regex-search-and-replace-action@v1.0.0
         with:
          mappings: "docker_image_tag==sha256-.* {THEN_UPDATE_FILES} **manifest/values.yaml=docker_image_tag_regex"
-         docker_image_tag: "${{ steps.push.outputs.digest }}"
+         docker_image_tag: "${{ needs.build-and-push-image.outputs.tagDiegest }}"
          docker_image_tag_regex: "tag: \\\"(?<docker_image_tag>.*)\\\""
       - name: Commit files
         run: |
