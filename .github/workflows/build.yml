@@ -72,8 +72,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
-      - name: Update Values.yaml
-        run: sed -i "s/tag:.*/tag:/ ${{ steps.push.outputs.digest }}/g" values.yaml
+      - name: Replace simple value in a specific file
+        uses: dreitier/conditional-regex-search-and-replace-action@v1.0.0
+        with:
+         mappings: "docker_image_tag==sha256-.* {THEN_UPDATE_FILES} **manifest/values.yaml=docker_image_tag_regex"
+         docker_image_tag: "${{ github.sha }}"
+         docker_image_tag_regex: "tag: \\\"(?<docker_image_tag>.*)\\\""
       - name: Commit files
         run: |
          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
