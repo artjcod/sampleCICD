@@ -57,3 +57,28 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+
+  # This job is to update helm chart
+  update-helm-chart:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: write
+	    pull-requests: write
+      #
+    steps:    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+	    - name: update tag value
+	      run: | 
+		    sed -i "s/tag:.*/tag:/ ${{ steps.push.outputs.digest }}/g" values.yaml
+	    - name: Commit Changes
+	      run: | 
+	    	git config --local user.email "build@github.com"
+		    git config --local user.name "GitHub Workflow Build"
+		    git add values.yaml
+	      git commit -m "update tag value to ${{ steps.push.outputs.digest }}"
+		    git push
+		
+		
