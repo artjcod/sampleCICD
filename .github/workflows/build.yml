@@ -82,7 +82,7 @@ jobs:
       - name: Replace simple value in a specific file
         uses: dreitier/conditional-regex-search-and-replace-action@v1.0.0
         with:
-         mappings: "docker_image_tag==sha256-.* {THEN_UPDATE_FILES} **manifest/values.yaml=docker_image_tag_regex"
+         mappings: "docker_image_tag==sha256-.* {THEN_UPDATE_FILES} manifest/values.yaml=docker_image_tag_regex"
          docker_image_tag: "${{ env.newTagDiegest }}"
          docker_image_tag_regex: "tag: \\\"(?<docker_image_tag>.*)\\\""
       - name: Commit files
