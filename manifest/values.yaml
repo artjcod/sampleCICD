@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/artjcod/samplecicd
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "sha256-3a00af8bddcb50ab5a0442cce76e5aa257602200824ab265f4ef70a6bb755ad8"
+  tag: "sha256-7a3a19f760feea3a7b8691240412aa24a3496fb7e6fe87e2a1eb52ad757ccb02"
 
 imagePullSecrets: []
 nameOverride: ""
