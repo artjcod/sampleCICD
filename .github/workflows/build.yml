@@ -15,6 +15,8 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    outputs:
+     sha_short: ${{ steps.short.outputs.sha_short }}
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -33,6 +35,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Short SHA
+        id: short
         run: |
          echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
@@ -75,7 +78,7 @@ jobs:
         uses: dreitier/conditional-regex-search-and-replace-action@v1.0.0
         with:
          mappings: "docker_image_tag==:.* {THEN_UPDATE_FILES} manifest/values.yaml=docker_image_tag_regex"
-         docker_image_tag: "${{ env.sha_short }}"
+         docker_image_tag: "${{ needs.build-and-push-image.outputs.sha_short }}"
          docker_image_tag_regex: "tag: \\\"(?<docker_image_tag>.*)\\\""
          directory: ${{ github.workspace }}
       - name: Commit files
