@@ -11,7 +11,7 @@ image:
   tag: "eb69449"
 
 imagePullSecrets: []
-nameOverride: ""
+nameOverride: {{ .Release.Name }}
 fullnameOverride: ""
 
 serviceAccount:
@@ -39,21 +39,24 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+
 service:
-  type: LoadBalancer
-  port: 9080
+  type: ClusterIP
+  port: 80
 
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
+  enabled: true
+  className: "nginx"
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: portal.app.dev
+    - host: zapa.app.dev
       paths:
-        - path: /
-          pathType: ImplementationSpecific
+        - path: /demo(/|$)(.*)
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -75,13 +78,17 @@ livenessProbe:
   httpGet:
     path: /
     port: http
+  initialDelaySeconds: 300
+  periodSeconds: 5
 readinessProbe:
   httpGet:
     path: /
     port: http
+  initialDelaySeconds: 300
+  periodSeconds: 5
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
