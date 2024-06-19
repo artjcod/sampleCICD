@@ -48,14 +48,12 @@ ingress:
   enabled: true
   className: "nginx"
   annotations: 
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-    nginx.ingress.kubernetes.io/use-regex: "true"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: zapa.app.dev
+    - host: starterkit.kubectl.tech
       paths:
-        - path: /demo(/|$)(.*)
+        - path: /
           pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
