@@ -22,7 +22,7 @@ git push -uf origin main
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/snbeta/messagesimulator/-/settings/integrations)
+- [ ] [Set up project integrations](https://github.com/artjcod/sampleCICD/-/settings/integrations)
 
 ## Collaborate with your team
 
