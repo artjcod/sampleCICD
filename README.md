@@ -1,4 +1,4 @@
-# messagesimulator
+# Simple CI/CD  using Helm and GitHub Actions
 
 
 
